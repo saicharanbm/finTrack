@@ -13,6 +13,11 @@ import PublicRoute from "@/routes/PublicRoute";
 import ProtectedRoute from "@/routes/ProtectedRoute";
 import Dashboard from "@/components/DashBoard";
 import NotFound from "@/components/NotFound";
+import Sidebar from "@/components/SideBar";
+import IntelliAdd from "./components/IntelliAdd";
+import Settings from "./components/Settings";
+import Analytics from "./components/Analytics";
+import Transactions from "./components/Transactions";
 
 export const queryClient = new QueryClient();
 export const router = createBrowserRouter([
@@ -26,7 +31,17 @@ export const router = createBrowserRouter([
       },
       {
         element: <ProtectedRoute />,
-        children: [{ path: "dashboard", element: <Dashboard /> }],
+        children: [
+          { path: "dashboard", element: <Dashboard /> },
+          { path: "/add", element: <IntelliAdd /> },
+          { path: "/settings", element: <Settings /> },
+          { path: "/analytics", element: <Analytics /> },
+          { path: "/transactions", element: <Transactions /> },
+        ],
+      },
+      {
+        path: "/sideBar",
+        element: <Sidebar />,
       },
       { path: "*", element: <NotFound /> },
     ],

@@ -69,3 +69,7 @@ export const userGoogleLogin = async (code: string) => {
 export const getUserData = () => {
   return axiosInstance.get("/auth/profile");
 };
+
+export const getParsedTransaction = (message: string) => {
+  return axiosInstance.post("/api/transactions/parse", { message });
+};

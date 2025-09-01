@@ -1,6 +1,6 @@
 import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
-import { axiosInstance, userGoogleLogin } from "./api";
+import { axiosInstance, getParsedTransaction, userGoogleLogin } from "./api";
 import { queryClient } from "@/main";
 
 export const useGoogleLoginMutation = () => {
@@ -27,6 +27,24 @@ export const useGoogleLoginMutation = () => {
       axiosInstance.defaults.headers.authorization = `Bearer ${token}`;
 
       queryClient.setQueryData(["auth", "user"], user);
+    },
+  });
+};
+
+export const useParsedTransactions = () => {
+  return useMutation({
+    mutationFn: async (message: string) => {
+      try {
+        const response = await getParsedTransaction(message);
+        return response.data;
+      } catch (error) {
+        if (axios.isAxiosError(error) && error.response) {
+          // Throw the server's error message
+          throw error.response.data?.message || "An unknown error occurred";
+        }
+        // For non-Axios errors
+        throw "An unexpected error occurred";
+      }
     },
   });
 };

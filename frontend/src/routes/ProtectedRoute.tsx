@@ -1,6 +1,7 @@
 import { Navigate, Outlet, useLocation } from "react-router-dom";
 import useAuth from "@/hooks/useAuth";
-import AuthVerificationLoader from "@/components/loader/AuthVerificationLoader";
+import AuthVerificationLoader from "@/components/shimmer/AuthVerificationLoader";
+import Container from "@/components/Container";
 
 export default function ProtectedRoute() {
   const { isLoading, isAuthenticated } = useAuth();
@@ -10,5 +11,9 @@ export default function ProtectedRoute() {
   if (!isAuthenticated)
     return <Navigate to="/" replace state={{ from: location }} />;
 
-  return <Outlet />;
+  return (
+    <Container>
+      <Outlet />
+    </Container>
+  );
 }
