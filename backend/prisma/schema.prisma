@@ -13,18 +13,26 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 enum Category {
-  FOOD 
+  FOOD
+  TRANSPORT
+  ENTERTAINMENT
   SHOPPING
-  HOUSING
+  UTILITIES
+  HEALTHCARE
   EDUCATION
-  HEALTH
+  TRAVEL
+  GROCERIES
+  RENT
   SALARY
-  OTHERS
+  FREELANCE
+  INVESTMENT
+  GIFT
+  OTHER
 
 }
 enum TransactionType{
-  DEBIT
-  CREDIT
+  INCOME
+  EXPENSE
 }
 model User {
   id        String    @id @default(cuid())
@@ -45,7 +53,7 @@ model Transaction{
   category       Category
   type           TransactionType
   date           DateTime            @default(now())
-  note           String?
+  title          String
   createdAt      DateTime            @default(now())
   updatedAt      DateTime            @updatedAt
   creatorId      String
