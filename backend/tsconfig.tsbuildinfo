@@ -1,0 +1,1 @@
+{"root":["./src/index.ts","./src/config/env.ts","./src/db/prisma.ts","./src/middlewares/verifyuser.ts","./src/routes/analyticsrouter.ts","./src/routes/authrouter.ts","./src/routes/index.ts","./src/routes/transactionsrouter.ts","./src/types/index.ts","./src/utils/index.ts"],"version":"5.7.2"}

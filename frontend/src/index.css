@@ -1,1 +1,10 @@
 @import "tailwindcss";
+
+@theme {
+  --color-content-background: #e5e6ec;
+  --color-theme: #123f73;
+  --color-title: oklch(27.8% 0.033 256.848);
+  --shadow-input: 0px 2px 3px -1px rgba(0, 0, 0, 0.1),
+    0px 1px 0px 0px rgba(25, 28, 33, 0.02),
+    0px 0px 0px 1px rgba(25, 28, 33, 0.08);
+}
