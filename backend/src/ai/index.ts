@@ -1,8 +1,9 @@
+import { env } from "../config/env";
 import { getCurrentDate } from "../utils/helper";
 import OpenAI from "openai";
 
 export const client = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
+  apiKey: env.OPENAI_API_KEY,
 });
 
 const currentDate = getCurrentDate();
@@ -35,6 +36,7 @@ CURRENT DATE: ${currentDate} (dd/mm/yyyy format)
    - If no date is given, omit it (it will default to current date in downstream code).
 7. **Title**: Always include a short, human-readable, **non-empty** title for each transaction (e.g., "Lunch", "Uber ride", "Salary").
 8. **Multiple transactions**: Parse as many as possible. If at least one is incomplete, return type="incomplete".
+9. **Price** : We only take INR if there is mention of any other currency inform the user about the same. If there is no mention of any specific currency consider it as INR 
 
 ### CATEGORIES ENUM
 - FOOD: restaurants, food delivery, dining

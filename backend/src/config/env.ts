@@ -11,10 +11,9 @@ const Env = z.object({
   JWT_REFRESH_SECRET: z.string(),
   GOOGLE_CLIENT_ID: z.string(),
   GOOGLE_CLIENT_SECRET: z.string(),
-  GOOGLE_REDIRECT_URI_DEV: z.string().url(),
-  GOOGLE_REDIRECT_URI_PROD: z.string().url(),
   FRONTEND_URL_DEV: z.string().url(),
   FRONTEND_URL_PROD: z.string().url(),
+  OPENAI_API_KEY: z.string(),
 });
 
 export const env = Env.parse(process.env);

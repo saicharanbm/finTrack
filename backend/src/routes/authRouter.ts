@@ -111,8 +111,7 @@ authRouter.post("/google", async (req, res) => {
       },
     });
   } catch (error) {
-    console.error("OAuth callback error:", error);
-    res.status(400).json({ error: "Authentication failed" });
+    res.status(400).json({ message: "Authentication failed" });
   }
 });
 
@@ -120,7 +119,7 @@ authRouter.post("/refresh", async (req, res) => {
   try {
     const token = req.cookies.refreshToken;
     if (!token) {
-      return res.status(401).json({ error: "No token provided" });
+      return res.status(401).json({ message: "No token provided" });
     }
 
     let payload: string | JwtPayload;
@@ -133,14 +132,14 @@ authRouter.post("/refresh", async (req, res) => {
         throw new Error("Invalid token type");
       }
     } catch (err) {
-      return res.status(401).json({ error: "Invalid or expired token" });
+      return res.status(401).json({ message: "Invalid or expired token" });
     }
 
     const user = await prisma.user.findUnique({
       where: { id: payload.userId },
     });
     if (!user || user.refreshToken !== token) {
-      return res.status(401).json({ error: "Invalid token" });
+      return res.status(401).json({ message: "Invalid token" });
     }
 
     const newAccessToken = generateToken(
@@ -170,8 +169,7 @@ authRouter.post("/refresh", async (req, res) => {
 
     res.json({ accessToken: newAccessToken });
   } catch (error) {
-    console.error("Refresh token error:", error);
-    res.status(500).json({ error: "Could not refresh token" });
+    res.status(500).json({ message: "Could not refresh token" });
   }
 });
 
@@ -213,8 +211,7 @@ authRouter.post("/logout", async (req, res) => {
     });
     res.status(200).json({ message: "Logged out" });
   } catch (error) {
-    console.error("Logout error:", error);
-    res.status(500).json({ error: "Could not log out" });
+    res.status(500).json({ message: "Could not log out" });
   }
 });
 
@@ -222,7 +219,7 @@ authRouter.get("/profile", async (req, res) => {
   try {
     const authHeader = req.headers.authorization;
     if (!authHeader) {
-      return res.status(401).json({ error: "No token provided" });
+      return res.status(401).json({ message: "No token provided" });
     }
 
     const token = authHeader.split(" ")[1];
@@ -236,14 +233,14 @@ authRouter.get("/profile", async (req, res) => {
         throw new Error("Invalid token type");
       }
     } catch (err) {
-      return res.status(401).json({ error: "Invalid or expired token" });
+      return res.status(401).json({ message: "Invalid or expired token" });
     }
 
     const user = await prisma.user.findUnique({
       where: { id: payload.userId },
     });
     if (!user) {
-      return res.status(404).json({ error: "User not found" });
+      return res.status(404).json({ message: "User not found" });
     }
 
     res.json({
@@ -256,7 +253,6 @@ authRouter.get("/profile", async (req, res) => {
       },
     });
   } catch (error) {
-    console.error("Get me error:", error);
-    res.status(500).json({ error: "Could not fetch user" });
+    res.status(500).json({ message: "Could not fetch user" });
   }
 });

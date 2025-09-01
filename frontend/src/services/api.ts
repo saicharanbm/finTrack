@@ -20,12 +20,11 @@ axiosInstance.interceptors.response.use(
   async (error) => {
     const originalRequest = error.config;
     console.log(error.response?.data);
+    console.log("hello", error);
 
     // Check for 401 status and specific error message
     if (
       error.response?.status === 401 &&
-      (error.response?.data?.message === "Unauthorized: Token expired" ||
-        error.response?.data?.message === "Unauthorized: No token provided") &&
       !originalRequest._retry // Ensure no infinite loops
     ) {
       console.log("Token expired. Attempting refresh...");
@@ -42,7 +41,6 @@ axiosInstance.interceptors.response.use(
         });
 
         const refreshResponse = await refreshAxios.post("/auth/refresh");
-        console.log(refreshResponse.data);
         const newAccessToken = refreshResponse.data.accessToken;
 
         // Update global axios instance and the original request with the new token
@@ -66,4 +64,8 @@ axiosInstance.interceptors.response.use(
 
 export const userGoogleLogin = async (code: string) => {
   return axiosInstance.post("/auth/google", { code });
+};
+
+export const getUserData = () => {
+  return axiosInstance.get("/auth/profile");
 };

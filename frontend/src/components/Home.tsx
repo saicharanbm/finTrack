@@ -57,7 +57,7 @@ function Login() {
 
       {/* Right Section */}
       <div className="flex flex-1 bg-theme lg:w-1/2 ">
-        <div className="flex gap-12 flex-col items-center justify-center pt-16 p-10 text-center w-full bg-content-background  rounded-t-3xl lg:rounded-none">
+        <div className="flex gap-12 flex-col items-center justify-center pt-16 p-10 text-center w-full bg-background  rounded-t-3xl lg:rounded-none">
           <p className=" max-w-sm text-xl lg:text-2xl lg:font-bold text-title">
             Track expenses, analyze spending patterns, and gain financial
             insights.
@@ -66,7 +66,7 @@ function Login() {
           <div className="flex flex-col gap-4">
             {/* Google Button */}
             <button
-              className=" flex w-64 items-center justify-center gap-2 rounded-full border-2 cursor-pointer border-gray-300 px-6 py-3  transition hover:shadow-md disabled:cursor-not-allowed disabled:opacity-40"
+              className=" flex w-64 items-center justify-center gap-2 rounded-full border-2 text-title cursor-pointer border-gray-300 dark:border-gray-700 px-6 py-3  transition hover:shadow-md disabled:cursor-not-allowed disabled:opacity-40"
               onClick={googleLogin}
               disabled={isPending}
             >
