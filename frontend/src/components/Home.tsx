@@ -7,8 +7,10 @@ function Login() {
   const { mutate: signin, isPending } = useGoogleLoginMutation();
 
   const googleLogin = useGoogleLogin({
+    flow: "auth-code",
+    // Make the intent explicit for the popup/one-tap flow:
+    redirect_uri: "postmessage",
     onSuccess: (response) => {
-      console.log(response);
       toast.promise(
         new Promise<void>((resolve, reject) => {
           signin(response.code, {
@@ -26,7 +28,6 @@ function Login() {
           success: "You’re all set! 🎉",
           error: {
             render({ data }: { data: string }) {
-              console.log(data);
               return (
                 (data as string) ||
                 "Oops! Couldn’t complete signup. Please retry."
@@ -38,7 +39,6 @@ function Login() {
       );
     },
     onError: (error) => console.log(error),
-    flow: "auth-code",
   });
   return (
     <div className="flex h-screen w-screen flex-col lg:flex-row">

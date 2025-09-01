@@ -8,10 +8,7 @@ import { TokenType } from "../types";
 
 export const authRouter = Router();
 
-const GOOGLE_REDIRECT_URI =
-  env.NODE_ENV === "production"
-    ? env.GOOGLE_REDIRECT_URI_PROD
-    : env.GOOGLE_REDIRECT_URI_DEV;
+const GOOGLE_REDIRECT_URI = "postmessage";
 const oauth2Client = new google.auth.OAuth2(
   env.GOOGLE_CLIENT_ID,
   env.GOOGLE_CLIENT_SECRET,
