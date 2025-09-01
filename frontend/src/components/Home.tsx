@@ -9,7 +9,6 @@ function Login() {
   const googleLogin = useGoogleLogin({
     onSuccess: (response) => {
       console.log(response);
-      signin(response.code);
       toast.promise(
         new Promise<void>((resolve, reject) => {
           signin(response.code, {
