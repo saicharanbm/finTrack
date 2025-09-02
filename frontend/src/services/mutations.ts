@@ -4,12 +4,14 @@ import {
   axiosInstance,
   createBulkTransaction,
   createTransaction,
+  deleteTransaction,
   getParsedTransaction,
+  updateTransaction,
   userGoogleLogin,
   userLogout,
 } from "./api";
 import { queryClient } from "@/main";
-import type { TransactionSchemaType } from "@/types";
+import type { TransactionSchemaType, UpdateTransactionSchema } from "@/types";
 
 export const useGoogleLoginMutation = () => {
   return useMutation({
@@ -59,6 +61,58 @@ export const useParsedTransactions = () => {
         // For non-Axios errors
         throw { message: "An unexpected error occurred" };
       }
+    },
+  });
+};
+
+export const useUpdateTransactions = () => {
+  return useMutation({
+    mutationFn: async ({
+      id,
+      data,
+    }: {
+      id: string;
+      data: UpdateTransactionSchema;
+    }) => {
+      try {
+        const res = await updateTransaction(id, data);
+        return res.data; // server returns updated transaction object
+      } catch (error) {
+        if (axios.isAxiosError(error) && error.response) {
+          throw {
+            message:
+              error.response.data?.message || "An unknown error occurred",
+          };
+        }
+        throw { message: "An unexpected error occurred" };
+      }
+    },
+    onSuccess: () => {
+      // refresh the list
+      queryClient.invalidateQueries({ queryKey: ["transactions"] });
+    },
+  });
+};
+
+export const useDeleteTransactions = () => {
+  return useMutation({
+    mutationFn: async ({ id }: { id: string }) => {
+      try {
+        const res = await deleteTransaction(id);
+        // 204 No Content -> res.data is undefined; treat any 2xx as success
+        return res.status;
+      } catch (error) {
+        if (axios.isAxiosError(error) && error.response) {
+          throw {
+            message:
+              error.response.data?.message || "An unknown error occurred",
+          };
+        }
+        throw { message: "An unexpected error occurred" };
+      }
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["transactions"] });
     },
   });
 };

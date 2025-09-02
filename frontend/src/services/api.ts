@@ -1,7 +1,11 @@
 import axios from "axios";
 import { queryClient } from "../main";
 import { env } from "@/config/env";
-import type { TransactionSchemaType } from "@/types";
+import type {
+  TransactionSchemaType,
+  TransactionsQueryParams,
+  UpdateTransactionSchema,
+} from "@/types";
 
 const baseURL =
   env.VITE_ENVIRONMENT === "production"
@@ -82,4 +86,20 @@ export const createTransaction = (data: TransactionSchemaType) => {
 };
 export const createBulkTransaction = (data: TransactionSchemaType[]) => {
   return axiosInstance.post("/api/transactions/bulk", { data });
+};
+
+export const getTransactions = (query: TransactionsQueryParams) => {
+  return axiosInstance.get("/api/transactions", { params: query });
+};
+
+export const updateTransaction = (
+  id: string,
+  data: UpdateTransactionSchema
+) => {
+  // send fields directly; server expects req.body to be the schema
+  return axiosInstance.put(`/api/transactions/${id}`, data);
+};
+
+export const deleteTransaction = (id: string) => {
+  return axiosInstance.delete(`/api/transactions/${id}`);
 };

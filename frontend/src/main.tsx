@@ -15,9 +15,8 @@ import Dashboard from "@/components/DashBoard";
 import NotFound from "@/components/NotFound";
 import Sidebar from "@/components/SideBar";
 import IntelliAdd from "./components/IntelliAdd";
-import Settings from "./components/Settings";
 import Analytics from "./components/Analytics";
-import Transactions from "./components/Transactions";
+import Transactions from "./components/transactions/Transactions";
 
 export const queryClient = new QueryClient();
 export const router = createBrowserRouter([
@@ -34,7 +33,6 @@ export const router = createBrowserRouter([
         children: [
           { path: "dashboard", element: <Dashboard /> },
           { path: "/add", element: <IntelliAdd /> },
-          { path: "/settings", element: <Settings /> },
           { path: "/analytics", element: <Analytics /> },
           { path: "/transactions", element: <Transactions /> },
         ],

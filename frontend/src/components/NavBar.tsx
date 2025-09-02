@@ -3,7 +3,6 @@ import {
   LayoutDashboard,
   Receipt,
   TrendingUp,
-  Settings,
   PenIcon,
   Sun,
   Moon,
@@ -40,7 +39,6 @@ const menuItems: MenuItem[] = [
     path: "/transactions",
   },
   { id: "analytics", label: "Analytics", icon: TrendingUp, path: "/analytics" },
-  { id: "settings", label: "Settings", icon: Settings, path: "/settings" },
 ];
 
 const NavBar = () => {

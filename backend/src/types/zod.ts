@@ -37,12 +37,13 @@ export const TransactionDataSchema = z
     date: t.date ?? undefined, // normalize null → undefined
   }));
 
-export const GetAllQuerySchema = z.object({
+export const GetQuerySchema = z.object({
   range: z.enum(["week", "month", "3month", "year", "all"]).optional(),
-  // optional extra filters, if you want them later:
-  type: z.enum(["INCOME", "EXPENSE"]).optional(),
-  category: z.string().optional(), // or z.nativeEnum(Category) if you import it
+  page: z.coerce.number().min(1).default(1).optional(),
+  pageSize: z.coerce.number().min(1).max(200).default(50).optional(),
 });
+
+type test = z.infer<typeof GetQuerySchema>;
 
 export const UpdateTransactionSchema = z.object({
   title: z.string().min(1).optional(),
@@ -52,7 +53,11 @@ export const UpdateTransactionSchema = z.object({
     .optional(),
   category: z.nativeEnum(Category).optional(),
   type: z.nativeEnum(TransactionType).optional(),
-  date: z.coerce.date().optional(), // accepts string/number and coerces to Date
+  date: z
+    .string()
+    .regex(/^\d{2}\/\d{2}\/\d{4}$/)
+    .optional()
+    .nullable(),
 });
 
 export const TransactionsArraySchema = z.array(TransactionDataSchema).min(1);

@@ -151,9 +151,7 @@ function IntelliAdd() {
   return (
     <div className=" flex-1 flex flex-col  gap-14 p-6 overflow-y-scroll">
       <div className="w-full">
-        <span className=" text-title text-xl font-mono font-semibold lg:text-2xl lg:font-bold">
-          Parse Your tansactions with AI
-        </span>
+        <h1 className="text-2xl font-bold">Parse Your tansactions with AI</h1>
       </div>
       <div className="w-full bg-card-background border border-card-border flex gap-4 flex-col p-4 rounded-2xl shadow-md">
         <div className="w-full flex flex-col">
