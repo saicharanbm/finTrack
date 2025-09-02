@@ -147,25 +147,6 @@ authRouter.post("/refresh", async (req, res) => {
       TokenType.ACCESS,
       env.JWT_ACCESS_SECRET
     );
-    const newRefreshToken = generateToken(
-      user.id,
-      TokenType.REFRESH,
-      env.JWT_REFRESH_SECRET
-    );
-
-    // Update refresh token in DB
-    await prisma.user.update({
-      where: { id: user.id },
-      data: { refreshToken: newRefreshToken },
-    });
-
-    // Set new refresh token in HTTP-only cookie
-    res.cookie("refreshToken", newRefreshToken, {
-      httpOnly: true,
-      secure: env.NODE_ENV === "production",
-      sameSite: "lax",
-      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
-    });
 
     res.json({ accessToken: newAccessToken });
   } catch (error) {

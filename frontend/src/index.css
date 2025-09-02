@@ -4,7 +4,7 @@
 
 :root {
   --background: hsl(231.43, 15.56%, 91.18%);
-  --theme: hsl(217.11, 55.88%, 26.67%);
+  --theme: hsl(217.11, 55.88%, 20.67%);
   --title: oklch(27.8% 0.033 256.848);
   --card-background: hsl(0, 0%, 98.43%);
   --card-border: hsl(228, 4.42%, 70.16%);

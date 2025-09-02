@@ -5,12 +5,16 @@ import {
   Settings,
   User,
   PenIcon,
+  Sun,
+  Moon,
+  LogOut,
 } from "lucide-react";
 import { NavLink } from "react-router-dom";
 import { useAuthQuery } from "@/services/queries";
 import React from "react";
 import icon from "@/assets/icon.png";
 import { cn } from "@/utils";
+import { useTheme } from "@/hooks/useTheme";
 
 type MenuItem = {
   id: string;
@@ -34,15 +38,20 @@ const menuItems: MenuItem[] = [
     path: "/transactions",
   },
   { id: "analytics", label: "Analytics", icon: TrendingUp, path: "/analytics" },
-
   { id: "settings", label: "Settings", icon: Settings, path: "/settings" },
 ];
 
 const Sidebar: React.FC = () => {
   const { data: userData } = useAuthQuery();
+  const { isDark, toggleTheme } = useTheme();
+
+  const handleLogout = () => {
+    // TODO: add your logout logic (clear tokens, call API, navigate, etc.)
+    console.log("Logout clicked");
+  };
 
   return (
-    <aside className="w-full h-screen overflow-auto bg-theme text-white flex flex-col  justify-between pt-8">
+    <aside className="w-full h-screen overflow-auto bg-theme text-white flex flex-col justify-between pt-8">
       {/* Header */}
       <div className="flex items-center justify-center gap-3">
         <div className="size-14 bg-white rounded-full overflow-hidden flex items-center justify-center">
@@ -52,7 +61,7 @@ const Sidebar: React.FC = () => {
       </div>
 
       {/* Navigation */}
-      <nav className="flex-1 px-6 py-16 ">
+      <nav className="flex-1 px-6 py-16">
         <ul className="space-y-4">
           {menuItems.map((item) => {
             const Icon = item.icon;
@@ -78,9 +87,48 @@ const Sidebar: React.FC = () => {
         </ul>
       </nav>
 
+      {/* Theme Toggle + Logout */}
+      <div className="px-6 pb-4">
+        <div className="flex items-center justify-between gap-3 mb-4">
+          <button
+            onClick={toggleTheme}
+            className={cn(
+              "flex items-center gap-2 px-3 py-2 rounded-lg transition-all duration-200",
+              isDark
+                ? "bg-white/10 text-blue-100 hover:bg-white/20 hover:text-white"
+                : "bg-gray-100 text-gray-600 hover:bg-gray-200 hover:text-gray-800"
+            )}
+            title={isDark ? "Switch to Light Mode" : "Switch to Dark Mode"}
+          >
+            {isDark ? (
+              <Sun className="w-4 h-4" />
+            ) : (
+              <Moon className="w-4 h-4" />
+            )}
+            <span className="text-sm font-medium">
+              {isDark ? "Light" : "Dark"}
+            </span>
+          </button>
+
+          <button
+            onClick={handleLogout}
+            className={cn(
+              "flex items-center gap-2 px-3 py-2 rounded-lg transition-all duration-200",
+              isDark
+                ? "bg-red-500/20 text-red-300 hover:bg-red-500/30 hover:text-red-200"
+                : "bg-red-50 text-red-600 hover:bg-red-100 hover:text-red-700"
+            )}
+            title="Logout"
+          >
+            <LogOut className="w-4 h-4" />
+            <span className="text-sm font-medium">Logout</span>
+          </button>
+        </div>
+      </div>
+
       {/* User Profile */}
       <div className="p-6 w-full">
-        <div className="flex items-center gap-3 ">
+        <div className="flex items-center gap-3">
           <div className="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center overflow-hidden">
             {userData?.user?.profilePic ? (
               <img
