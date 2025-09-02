@@ -54,7 +54,7 @@ function IntelliAdd() {
   return (
     <div className=" flex-1 flex flex-col  gap-14 p-6 overflow-y-scroll">
       <div className="w-full">
-        <span className=" dark:text-slate-300 font-mono lg:text-xl lg:font-semibold ">
+        <span className=" dark:text-slate-300  text-xl font-semibold ">
           Parse Your tansactions with AI
         </span>
       </div>
