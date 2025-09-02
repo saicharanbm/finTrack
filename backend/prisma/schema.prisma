@@ -52,7 +52,7 @@ model Transaction{
   amountPaise    BigInt
   category       Category
   type           TransactionType
-  date           DateTime            @default(now())
+  date           DateTime            @db.Date
   title          String
   createdAt      DateTime            @default(now())
   updatedAt      DateTime            @updatedAt

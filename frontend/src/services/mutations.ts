@@ -1,7 +1,15 @@
 import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
-import { axiosInstance, getParsedTransaction, userGoogleLogin } from "./api";
+import {
+  axiosInstance,
+  createBulkTransaction,
+  createTransaction,
+  getParsedTransaction,
+  userGoogleLogin,
+  userLogout,
+} from "./api";
 import { queryClient } from "@/main";
+import type { TransactionSchemaType } from "@/types";
 
 export const useGoogleLoginMutation = () => {
   return useMutation({
@@ -12,10 +20,13 @@ export const useGoogleLoginMutation = () => {
       } catch (error) {
         if (axios.isAxiosError(error) && error.response) {
           // Throw the server's error message
-          throw error.response.data?.message || "An unknown error occurred";
+          throw {
+            message:
+              error.response.data?.message || "An unknown error occurred",
+          };
         }
         // For non-Axios errors
-        throw "An unexpected error occurred";
+        throw { message: "An unexpected error occurred" };
       }
     },
     onSuccess: (data: {
@@ -40,10 +51,65 @@ export const useParsedTransactions = () => {
       } catch (error) {
         if (axios.isAxiosError(error) && error.response) {
           // Throw the server's error message
-          throw error.response.data?.message || "An unknown error occurred";
+          throw {
+            message:
+              error.response.data?.message || "An unknown error occurred",
+          };
         }
         // For non-Axios errors
-        throw "An unexpected error occurred";
+        throw { message: "An unexpected error occurred" };
+      }
+    },
+  });
+};
+
+export const useLogoutMutation = () => {
+  return useMutation({
+    mutationFn: async () => {
+      try {
+        const response = await userLogout();
+        return response.data.message;
+      } catch (error) {
+        if (axios.isAxiosError(error) && error.response) {
+          // Throw the server's error message
+          throw {
+            message:
+              error.response.data?.message || "An unknown error occurred",
+          };
+        }
+        // For non-Axios errors
+        throw { message: "An unexpected error occurred" };
+      }
+    },
+    onSuccess: () => {
+      //clear the query cache
+      queryClient.clear();
+      //clear the axios instance auth headers
+      axiosInstance.defaults.headers.authorization = "";
+    },
+  });
+};
+
+export const useCreateTransactionMutation = () => {
+  return useMutation({
+    mutationFn: async (
+      data: TransactionSchemaType | TransactionSchemaType[]
+    ) => {
+      try {
+        const response = Array.isArray(data)
+          ? await createBulkTransaction(data)
+          : await createTransaction(data);
+        return response.data;
+      } catch (error) {
+        if (axios.isAxiosError(error) && error.response) {
+          // Throw the server's error message
+          throw {
+            message:
+              error.response.data?.message || "An unknown error occurred",
+          };
+        }
+        // For non-Axios errors
+        throw { message: "An unexpected error occurred" };
       }
     },
   });

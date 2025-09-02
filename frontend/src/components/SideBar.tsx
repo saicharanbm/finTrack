@@ -9,12 +9,14 @@ import {
   Moon,
   LogOut,
 } from "lucide-react";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import { useAuthQuery } from "@/services/queries";
 import React from "react";
 import icon from "@/assets/icon.png";
 import { cn } from "@/utils";
 import { useTheme } from "@/hooks/useTheme";
+import { useLogoutMutation } from "@/services/mutations";
+import { toast } from "react-toastify";
 
 type MenuItem = {
   id: string;
@@ -44,10 +46,24 @@ const menuItems: MenuItem[] = [
 const Sidebar: React.FC = () => {
   const { data: userData } = useAuthQuery();
   const { isDark, toggleTheme } = useTheme();
-
+  const { mutateAsync: logout } = useLogoutMutation();
+  const navigate = useNavigate();
   const handleLogout = () => {
-    // TODO: add your logout logic (clear tokens, call API, navigate, etc.)
-    console.log("Logout clicked");
+    toast.promise(logout(), {
+      pending: "Logging out...",
+      success: {
+        render() {
+          navigate("/");
+          return "Logout successful!";
+        },
+      },
+      error: {
+        render({ data }: { data: string }) {
+          console.log(data);
+          return (data as string) || "Logout failed!";
+        },
+      },
+    });
   };
 
   return (

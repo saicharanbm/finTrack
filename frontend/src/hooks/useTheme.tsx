@@ -26,15 +26,15 @@ export function useTheme() {
 
   // Apply theme class & persist choice
   useLayoutEffect(() => {
-    const root = document.documentElement;
-    if (isDark) {
-      root.classList.add("dark");
-
-      localStorage.setItem("theme", "dark");
-    } else {
-      root.classList.remove("dark");
-
-      localStorage.setItem("theme", "light");
+    const root = document.getElementsByClassName("home")[0];
+    if (root) {
+      if (isDark) {
+        root.classList.add("dark");
+        localStorage.setItem("theme", "dark");
+      } else {
+        root.classList.remove("dark");
+        localStorage.setItem("theme", "light");
+      }
     }
   }, [isDark]);
 

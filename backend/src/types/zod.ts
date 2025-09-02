@@ -1,3 +1,4 @@
+import { Category, TransactionType } from "@prisma/client";
 import { z } from "zod4";
 const CategorySchema = z.enum([
   "FOOD",
@@ -19,7 +20,7 @@ const CategorySchema = z.enum([
 
 export const TransactionTypeSchema = z.enum(["INCOME", "EXPENSE"]);
 
-const TransactionDataSchema = z
+export const TransactionDataSchema = z
   .object({
     amountPaise: z.number().int().positive(),
     category: CategorySchema, // keep your existing enum
@@ -36,10 +37,30 @@ const TransactionDataSchema = z
     date: t.date ?? undefined, // normalize null → undefined
   }));
 
+export const GetAllQuerySchema = z.object({
+  range: z.enum(["week", "month", "3month", "year", "all"]).optional(),
+  // optional extra filters, if you want them later:
+  type: z.enum(["INCOME", "EXPENSE"]).optional(),
+  category: z.string().optional(), // or z.nativeEnum(Category) if you import it
+});
+
+export const UpdateTransactionSchema = z.object({
+  title: z.string().min(1).optional(),
+  amountPaise: z
+    .union([z.string(), z.number(), z.bigint()])
+    .transform((v) => BigInt(v as any))
+    .optional(),
+  category: z.nativeEnum(Category).optional(),
+  type: z.nativeEnum(TransactionType).optional(),
+  date: z.coerce.date().optional(), // accepts string/number and coerces to Date
+});
+
+export const TransactionsArraySchema = z.array(TransactionDataSchema).min(1);
+
 export const TransactionResponseSchema = z.discriminatedUnion("type", [
   z.object({
     type: z.literal("success"),
-    data: z.array(TransactionDataSchema).min(1),
+    data: TransactionsArraySchema,
   }),
   z.object({
     type: z.literal("incomplete"),

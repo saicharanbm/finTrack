@@ -1,6 +1,7 @@
 import axios from "axios";
 import { queryClient } from "../main";
 import { env } from "@/config/env";
+import type { TransactionSchemaType } from "@/types";
 
 const baseURL =
   env.VITE_ENVIRONMENT === "production"
@@ -72,4 +73,13 @@ export const getUserData = () => {
 
 export const getParsedTransaction = (message: string) => {
   return axiosInstance.post("/api/transactions/parse", { message });
+};
+export const userLogout = () => {
+  return axiosInstance.post("/auth/logout");
+};
+export const createTransaction = (data: TransactionSchemaType) => {
+  return axiosInstance.post("/api/transactions/", { data });
+};
+export const createBulkTransaction = (data: TransactionSchemaType[]) => {
+  return axiosInstance.post("/api/transactions/bulk", { data });
 };

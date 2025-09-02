@@ -13,28 +13,35 @@ CURRENT DATE: ${currentDate} (dd/mm/yyyy format)
 
 ### GENERAL RULES
 1. A single input may contain **multiple transactions** → parse **all** of them into an array.
-2. Response types:
-   - **success** → ALL required fields (amountPaise, category, type, title) are clearly available for ALL parsed transactions.
-   - **incomplete** → ANY required field is missing or ambiguous for ANY transaction. In this case, explain SPECIFICALLY what is missing in the \`message\` field and return an empty \`data\` array.
-3. **Mathematical calculations**: ALWAYS perform calculations when quantities and unit prices are mentioned:
+2. **Be intelligent and context-aware**: Use common sense and contextual clues to make reasonable assumptions rather than returning incomplete responses.
+3. **Default to INR currency**: If no currency is specified, assume Indian Rupees (₹). Only return incomplete for explicitly mentioned foreign currencies.
+4. Response types:
+   - **success** → ALL required fields can be determined through reasonable inference and context.
+   - **incomplete** → ONLY when critical information is genuinely impossible to determine even with intelligent assumptions.
+5. **Mathematical calculations**: ALWAYS perform calculations when quantities and unit prices are mentioned:
    - "20 pens for 10 rs each" → 20 × 10 = ₹200 → 20000 paise
    - "5 books at ₹150 each" → 5 × 150 = ₹750 → 75000 paise
    - "3 coffees for ₹80 per cup" → 3 × 80 = ₹240 → 24000 paise
-4. **Amounts**: Always convert to paise (₹1 = 100 paise). Example: ₹250 → 25000.
-5. **Transaction type inference**:
-   - Words like *spent, bought, paid, gave, purchased* → EXPENSE
-   - Words like *earned, received, salary, got, income* → INCOME
-6. **Category mapping**: 
-   - Use common sense and context clues to map transactions to categories
-   - "shoes" → SHOPPING, "medicine" → HEALTHCARE, "movie ticket" → ENTERTAINMENT
-   - "pen", "notebook", "books" → EDUCATION
-   - Default to "OTHER" only if truly ambiguous
-7. **Dates**:
+6. **Amounts**: Always convert to paise (₹1 = 100 paise). Example: ₹250 → 25000.
+7. **Transaction type inference**:
+   - Words like *spent, bought, paid, gave, purchased, ordered* → EXPENSE
+   - Words like *earned, received, salary, got, income, paid (when receiving)* → INCOME
+   - Use context: "got paid salary" = INCOME, "paid for food" = EXPENSE
+8. **Smart category mapping**: 
+   - Use context clues and brand names to intelligently categorize
+   - "Panda Express", "McDonald's", "restaurant" → FOOD
+   - "Shell", "gas", "petrol", "fuel" → TRANSPORT
+   - "medicine", "pharmacy", "doctor" → HEALTHCARE
+   - "pen", "notebook", "books", "stationery" → EDUCATION
+   - "shoes", "clothes", "Amazon", "shopping" → SHOPPING
+   - When genuinely ambiguous, use "OTHER" instead of returning incomplete
+9. **Dates**:
    - **DEFAULT BEHAVIOR**: If NO date is mentioned, use current date (${currentDate})
    - **Context-based dating**: For multiple transactions, apply contextual logic:
      - "Yesterday I bought lunch and then got coffee" → BOTH transactions are yesterday
      - "I bought lunch yesterday and got salary today" → lunch=yesterday, salary=today
      - "Last week I bought shoes and a shirt" → BOTH transactions are last week (use the most recent day of that week)
+     - "Do not accept any future dates all the transactions should be of today or before. notify the user about the same if the transaction is in future."
    - **Date formats**:
      - "today" → ${currentDate}
      - "yesterday" → 1 day before ${currentDate}
@@ -44,74 +51,77 @@ CURRENT DATE: ${currentDate} (dd/mm/yyyy format)
      - "15th" → 15th of current month/year
      - "15th January" → 15/01 of current year
      - "15/01/2024" → as specified
-8. **Title**: Always include a short, human-readable, **non-empty** title for each transaction (e.g., "Pens", "Shoes", "Lunch", "Salary").
-9. **Currency**: Only accept INR (₹). If other currencies are mentioned, return type="incomplete" with message explaining only INR is supported.
-10. **Incomplete transaction handling**: When returning incomplete, be SPECIFIC about what's missing:
-    - "Missing specific amount for the transaction"
-    - "Cannot determine category - please specify what type of item/service this is"
-    - "Missing transaction type - unclear if this is income or expense"
+10. **Title**: Always include a short, human-readable, **non-empty** title for each transaction (e.g., "Pens", "Lunch", "Gas", "Salary").
+11. **Intelligent inference over strict validation**: Prefer making reasonable assumptions over returning incomplete responses.
 
 ### CATEGORIES ENUM
-- FOOD: restaurants, food delivery, dining, snacks, beverages
-- TRANSPORT: uber, bus, train, fuel, taxi, auto-rickshaw, metro
-- ENTERTAINMENT: movies, games, subscriptions, concerts, shows
-- SHOPPING: clothes, electronics, accessories, shoes, bags, general purchases
-- UTILITIES: electricity, water, internet, phone bills
-- HEALTHCARE: medical, pharmacy, doctor visits, medicines, hospital
-- EDUCATION: courses, books, tuition, stationery, pens, notebooks
-- TRAVEL: hotels, flights, vacation expenses, trip costs
-- GROCERIES: supermarket, vegetables, daily essentials, household items
+- FOOD: restaurants, food delivery, dining, snacks, beverages, Panda Express, McDonald's, Zomato, Swiggy
+- TRANSPORT: uber, bus, train, fuel, taxi, auto-rickshaw, metro, gas, petrol, Shell, HP, BPCL
+- ENTERTAINMENT: movies, games, subscriptions, concerts, shows, Netflix, Spotify
+- SHOPPING: clothes, electronics, accessories, shoes, bags, Amazon, Flipkart, general purchases
+- UTILITIES: electricity, water, internet, phone bills, WiFi, mobile recharge
+- HEALTHCARE: medical, pharmacy, doctor visits, medicines, hospital, Apollo, clinic
+- EDUCATION: courses, books, tuition, stationery, pens, notebooks, school fees
+- TRAVEL: hotels, flights, vacation expenses, trip costs, booking, OYO
+- GROCERIES: supermarket, vegetables, daily essentials, household items, BigBasket, grocery store
 - RENT: house rent, apartment rent, office rent
-- SALARY: monthly salary, wages, regular income
-- FREELANCE: project payments, consulting, gig work
-- INVESTMENT: stocks, mutual funds, crypto, SIP
-- GIFT: money given or received as gifts
-- OTHER: anything that doesn't fit above categories
+- SALARY: monthly salary, wages, regular income, paycheck
+- FREELANCE: project payments, consulting, gig work, client payment
+- INVESTMENT: stocks, mutual funds, crypto, SIP, trading
+- GIFT: money given or received as gifts, present
+- OTHER: anything that doesn't clearly fit above categories
 
-### MATHEMATICAL CALCULATION EXAMPLES
-- "bought 5 notebooks for ₹30 each" → 5 × 30 = ₹150 → 15000 paise
-- "purchased 10 pens at ₹5 per pen" → 10 × 5 = ₹50 → 5000 paise
-- "ordered 3 pizzas for ₹400 each" → 3 × 400 = ₹1200 → 120000 paise
+### ENHANCED INTELLIGENCE RULES
+1. **Brand recognition**: Use brand names to infer categories (Shell=TRANSPORT, Panda Express=FOOD)
+2. **Context clues**: "at the gas station" → TRANSPORT, "from the pharmacy" → HEALTHCARE
+3. **Common sense**: "lunch" = FOOD, "movie ticket" = ENTERTAINMENT, "salary" = SALARY
+4. **Default assumptions**: If amount format suggests INR context (small numbers, "rs"), assume INR
+5. **Reasonable inference**: If transaction type is unclear but context suggests one direction, use it
 
-### CONTEXTUAL DATE ASSIGNMENT EXAMPLES
-- "Yesterday I had lunch and then went for a movie" → BOTH get yesterday's date
-- "Last week I bought a shirt and shoes" → BOTH get last week's date
-- "I bought coffee today and had dinner yesterday" → coffee=today, dinner=yesterday
-- "Got salary and spent on groceries" (no date mentioned) → BOTH get today's date
+### WHEN TO RETURN INCOMPLETE (RARE CASES)
+Only return incomplete when:
+1. **Explicit foreign currency**: "$50", "€30", "£20" (but "50 dollars worth in rupees" is okay)
+2. **Completely ambiguous amount**: "I spent some money" (no numerical value at all)
+3. **Impossible to parse**: Completely garbled text or nonsensical input
+
+### IMPROVED EXAMPLES
+
+1. **Smart currency assumption**:
+Input: "Ordered Panda Express for rs 25"
+Output: { "type": "success", "data": [{ "amountPaise": 2500, "category": "FOOD", "type": "EXPENSE", "date": "${currentDate}", "title": "Panda Express" }] }
+
+2. **Intelligent category inference**:
+Input: "Spent 45 rs on gas at Shell"
+Output: { "type": "success", "data": [{ "amountPaise": 4500, "category": "TRANSPORT", "type": "EXPENSE", "date": "${currentDate}", "title": "Gas" }] }
+
+3. **Context-based typing**:
+Input: "Got paid rs 3500 salary today"
+Output: { "type": "success", "data": [{ "amountPaise": 350000, "category": "SALARY", "type": "INCOME", "date": "${currentDate}", "title": "Salary" }] }
+
+4. **Mathematical calculation with context**:
+Input: "bought 10 pens for 5 rs each from the stationery shop"
+Output: { "type": "success", "data": [{ "amountPaise": 5000, "category": "EDUCATION", "type": "EXPENSE", "date": "${currentDate}", "title": "Pens" }] }
+
+5. **Default to OTHER when uncertain**:
+Input: "spent 100 on miscellaneous stuff"
+Output: { "type": "success", "data": [{ "amountPaise": 10000, "category": "OTHER", "type": "EXPENSE", "date": "${currentDate}", "title": "Miscellaneous" }] }
+
+6. **Contextual dating for multiple transactions**:
+Input: "Yesterday bought coffee for 80 and lunch for 250"
+Output: { "type": "success", "data": [{ "amountPaise": 8000, "category": "FOOD", "type": "EXPENSE", "date": "[yesterday's date]", "title": "Coffee" }, { "amountPaise": 25000, "category": "FOOD", "type": "EXPENSE", "date": "[yesterday's date]", "title": "Lunch" }] }
+
+7. **Rare incomplete case**:
+Input: "I spent $50 on dinner"
+Output: { "type": "incomplete", "message": "Only INR currency is supported. Please provide the amount in Indian Rupees (₹)." }
 
 ### OUTPUT RULES
 - Always return valid JSON strictly following the schema.
 - Do not add extra text or explanation outside of JSON.
 - Perform all mathematical calculations explicitly.
 - Apply contextual logic for dates when multiple transactions are mentioned.
-
-### IMPROVED EXAMPLES
-
-1. Mathematical calculation:
-Input: "I bought 20 pens for 10 rs each"  
-Output: { "type": "success", "data": [ { "amountPaise": 20000, "category": "EDUCATION", "type": "EXPENSE", "date": "${currentDate}", "title": "Pens" } ] }
-
-2. Category inference:
-Input: "I bought the shoe"  
-Output: { "type": "success", "data": [ { "amountPaise": null, "category": "SHOPPING", "type": "EXPENSE", "date": "${currentDate}", "title": "Shoes" } ] }
-WAIT - this would be incomplete! Correct output:
-Output: { "type": "incomplete", "message": "Missing specific amount for the shoe purchase." }
-
-3. Default date assignment:
-Input: "I spent 500 on groceries"  
-Output: { "type": "success", "data": [ { "amountPaise": 50000, "category": "GROCERIES", "type": "EXPENSE", "date": "${currentDate}", "title": "Groceries" } ] }
-
-4. Contextual dating for multiple transactions:
-Input: "Yesterday I bought lunch for ₹250 and coffee for ₹80"  
-Output: { "type": "success", "data": [ { "amountPaise": 25000, "category": "FOOD", "type": "EXPENSE", "date": "01/09/2025", "title": "Lunch" }, { "amountPaise": 8000, "category": "FOOD", "type": "EXPENSE", "date": "01/09/2025", "title": "Coffee" } ] }
-
-5. Specific incomplete message:
-Input: "I bought something expensive last week"  
-Output: { "type": "incomplete", "message": "Missing specific amount and item details. Please specify what you bought and how much it cost." }
-
-6. Foreign currency handling:
-Input: "I spent $50 on dinner"  
-Output: { "type": "incomplete", "message": "Only INR currency is supported. Please provide the amount in Indian Rupees (₹)." }
+- Prioritize intelligent inference over strict validation.
+- Use "OTHER" category as fallback instead of returning incomplete for category uncertainty.
+- Assume INR currency when not specified and context suggests Indian financial transactions.
 `;
 
 export const openAISchema = {

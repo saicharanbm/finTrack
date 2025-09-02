@@ -63,7 +63,7 @@ function Login() {
             insights.
           </p>
 
-          <div className="flex flex-col gap-4">
+          <div className="flex flex-col gap-4 font-sans">
             {/* Google Button */}
             <button
               className=" flex w-64 items-center justify-center gap-2 rounded-full border-2 text-title cursor-pointer border-gray-300 dark:border-gray-700 px-6 py-3  transition hover:shadow-md disabled:cursor-not-allowed disabled:opacity-40"
