@@ -17,6 +17,7 @@ import Sidebar from "@/components/SideBar";
 import IntelliAdd from "@/pages/IntelliAdd";
 import Analytics from "@/pages/Analytics";
 import Transactions from "@/pages/Transactions";
+import { Analytics as VercelAnalytics } from "@vercel/analytics/react";
 
 export const queryClient = new QueryClient();
 export const router = createBrowserRouter([
@@ -48,6 +49,7 @@ export const router = createBrowserRouter([
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
+    <VercelAnalytics />
     <QueryClientProvider client={queryClient}>
       <ReactQueryDevtools />
       <ToastContainer
