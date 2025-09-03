@@ -11,9 +11,6 @@ import {
   Legend,
 } from "recharts";
 
-const fmtINR = (paise: number) =>
-  (paise / 100).toLocaleString("en-IN", { style: "currency", currency: "INR" });
-
 export default function TrendsChart({ range }: { range: RangeKey }) {
   const { data, isLoading, isError } = useTransactionsTrends(range);
 
@@ -31,7 +28,7 @@ export default function TrendsChart({ range }: { range: RangeKey }) {
   }
 
   const points = (data.points as any[]).map((p) => ({
-    bucket: p.bucket, // YYYY-MM-DD (day or month-start)
+    bucket: p.bucket, // YYYY-MM-DD
     income: p.incomePaise / 100,
     expense: p.expensePaise / 100,
   }));
@@ -48,8 +45,7 @@ export default function TrendsChart({ range }: { range: RangeKey }) {
             <CartesianGrid strokeDasharray="3 3" />
             <XAxis
               dataKey="bucket"
-              tickFormatter={(v) => {
-                // show month short if bucket is month; else day
+              tickFormatter={(v: string) => {
                 const d = new Date(v);
                 return data.bucket === "month"
                   ? d.toLocaleString("en-US", { month: "short" })
@@ -60,7 +56,7 @@ export default function TrendsChart({ range }: { range: RangeKey }) {
               }}
             />
             <YAxis
-              tickFormatter={(v) =>
+              tickFormatter={(v: number) =>
                 v.toLocaleString("en-IN", {
                   style: "currency",
                   currency: "INR",
@@ -69,16 +65,14 @@ export default function TrendsChart({ range }: { range: RangeKey }) {
               }
             />
             <Tooltip
-              formatter={(value: any, name: any) =>
-                [
-                  (value as number).toLocaleString("en-IN", {
-                    style: "currency",
-                    currency: "INR",
-                  }),
-                  name === "income" ? "Income" : "Expense",
-                ] as any
-              }
-              labelFormatter={(label) => new Date(label).toDateString()}
+              formatter={(value: number, name: string) => [
+                value.toLocaleString("en-IN", {
+                  style: "currency",
+                  currency: "INR",
+                }),
+                name === "income" ? "Income" : "Expense",
+              ]}
+              labelFormatter={(label: string) => new Date(label).toDateString()}
             />
             <Legend />
             <Line

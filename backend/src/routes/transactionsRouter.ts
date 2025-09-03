@@ -17,7 +17,7 @@ const parseDate = (dateStr: string | undefined) => {
   if (!dateStr) return new Date(); // Default to current date
 
   const [day, month, year] = dateStr.split("/");
-  return new Date(parseInt(year), parseInt(month) - 1, parseInt(day) + 1);
+  return new Date(parseInt(year), parseInt(month) - 1, parseInt(day));
 };
 
 /** Serialize a single transaction (BigInt -> number). */

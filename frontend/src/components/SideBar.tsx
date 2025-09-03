@@ -18,7 +18,7 @@ const Sidebar = () => {
       pending: "Logging out...",
       success: {
         render() {
-          // navigate("/");
+          navigate("/");
           return "Logout successful!";
         },
       },

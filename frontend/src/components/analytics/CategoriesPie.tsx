@@ -9,6 +9,12 @@ import {
   ResponsiveContainer,
 } from "recharts";
 
+type CategoryPoint = {
+  name: string;
+  value: number; // percent
+  totalPaise: number; // absolute for tooltip
+};
+
 const COLORS = [
   "#22c55e",
   "#3b82f6",
@@ -38,10 +44,10 @@ export default function CategoriesPie({ range }: { range: RangeKey }) {
     );
   }
 
-  const chartData = data.items.map((it: any) => ({
-    name: it.category,
-    value: Number(it.percent), // % for the pie
-    totalPaise: it.totalPaise, // for tooltip
+  const chartData: CategoryPoint[] = data.items.map((it: any) => ({
+    name: String(it.category),
+    value: Number(it.percent),
+    totalPaise: Number(it.totalPaise ?? 0),
   }));
 
   return (
@@ -58,12 +64,12 @@ export default function CategoriesPie({ range }: { range: RangeKey }) {
               outerRadius={90}
               paddingAngle={2}
             >
-              {chartData.map((_, idx) => (
+              {chartData.map((_: CategoryPoint, idx: number) => (
                 <Cell key={`cell-${idx}`} fill={COLORS[idx % COLORS.length]} />
               ))}
             </Pie>
             <Tooltip
-              formatter={(value: any, name: any, props: any) => {
+              formatter={(value: number, name: string, props: any) => {
                 const { payload } = props;
                 return [`${value}% (${fmtINR(payload.totalPaise)})`, name];
               }}
