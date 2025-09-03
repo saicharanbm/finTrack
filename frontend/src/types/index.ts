@@ -18,6 +18,7 @@ export interface TransactionsQueryParams {
   page?: number;
   pageSize?: number;
 }
+export type RangeKey = "week" | "month" | "3month" | "year" | "all";
 
 export interface UpdateTransactionSchema {
   title?: string;
@@ -34,4 +35,11 @@ export type TransactionType = Omit<
   id: string;
   amountPaise: string; // Keep as string since BigInt becomes string in JSON
   date: string;
+};
+
+export type MenuItem = {
+  id: string;
+  label: string;
+  icon: React.ComponentType<React.SVGProps<SVGSVGElement>>;
+  path: string;
 };

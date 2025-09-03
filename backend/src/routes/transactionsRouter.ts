@@ -10,13 +10,14 @@ import {
 } from "../types/zod";
 import { prisma } from "../db/prisma";
 import { Prisma, Category, TransactionType } from "@prisma/client";
+import { getSinceDate } from "../utils/helper";
 
 export const transactionsRouter = Router();
 const parseDate = (dateStr: string | undefined) => {
   if (!dateStr) return new Date(); // Default to current date
 
   const [day, month, year] = dateStr.split("/");
-  return new Date(parseInt(year), parseInt(month) - 1, parseInt(day));
+  return new Date(parseInt(year), parseInt(month) - 1, parseInt(day) + 1);
 };
 
 /** Serialize a single transaction (BigInt -> number). */
@@ -33,40 +34,6 @@ function serializeTxns(txns: any[]) {
   return txns.map(serializeTxn);
 }
 
-/** Range helper: compute lower bound date; undefined => all time */
-function getSinceDate(range?: string): Date | undefined {
-  if (!range) return undefined;
-  const now = new Date();
-  const d = new Date(now);
-  switch (range.toLowerCase()) {
-    case "week":
-    case "last-week":
-    case "7d":
-      d.setDate(now.getDate() - 7);
-      return d;
-    case "month":
-    case "last-month":
-    case "30d":
-      d.setMonth(now.getMonth() - 1);
-      return d;
-    case "3month":
-    case "3months":
-    case "quarter":
-    case "90d":
-      d.setMonth(now.getMonth() - 3);
-      return d;
-    case "year":
-    case "last-year":
-    case "365d":
-      d.setFullYear(now.getFullYear() - 1);
-      return d;
-    case "all":
-    case "all-time":
-      return undefined;
-    default:
-      return undefined;
-  }
-}
 // create single transaction
 transactionsRouter.post("/", async (req, res) => {
   const { userId } = req;

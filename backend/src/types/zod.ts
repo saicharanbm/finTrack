@@ -43,6 +43,8 @@ export const GetQuerySchema = z.object({
   pageSize: z.coerce.number().min(1).max(200).default(50).optional(),
 });
 
+export const RangeSchema = GetQuerySchema.shape.range;
+
 type test = z.infer<typeof GetQuerySchema>;
 
 export const UpdateTransactionSchema = z.object({

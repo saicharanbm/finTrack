@@ -79,7 +79,7 @@ function Login() {
             </button>
             {/* Email Button */}
             <button
-              className="w-64 rounded-full bg-theme px-6 py-3 cursor-pointer text-white shadow-md hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-40"
+              className="w-64 rounded-full bg-theme dark:bg-[#1c3360] px-6 py-3 cursor-pointer text-white shadow-md hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-40"
               onClick={googleLogin}
               disabled={isPending}
             >

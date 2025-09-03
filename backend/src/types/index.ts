@@ -10,3 +10,5 @@ declare global {
     }
   }
 }
+
+export type RangeKey = "week" | "month" | "3month" | "year" | "all";

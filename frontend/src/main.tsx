@@ -5,18 +5,18 @@ import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import { ToastContainer, Zoom } from "react-toastify";
-import "./index.css";
+import "@/index.css";
 import App from "@/App.tsx";
-import Home from "@/components/Home.tsx";
+import Home from "@/pages/Home";
 import { env } from "@/config/env";
 import PublicRoute from "@/routes/PublicRoute";
 import ProtectedRoute from "@/routes/ProtectedRoute";
-import Dashboard from "@/components/DashBoard";
-import NotFound from "@/components/NotFound";
+import Dashboard from "@/pages/DashBoard";
+import NotFound from "@/pages/NotFound";
 import Sidebar from "@/components/SideBar";
-import IntelliAdd from "./components/ai_transaction/IntelliAdd";
-import Analytics from "./components/Analytics";
-import Transactions from "./components/transactions/Transactions";
+import IntelliAdd from "@/pages/IntelliAdd";
+import Analytics from "@/pages/Analytics";
+import Transactions from "@/pages/Transactions";
 
 export const queryClient = new QueryClient();
 export const router = createBrowserRouter([

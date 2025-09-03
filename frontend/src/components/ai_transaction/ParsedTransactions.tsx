@@ -118,7 +118,7 @@ function ParsedTransactions({
         parsedTransactions.map((transaction, index) => (
           <div
             key={index}
-            className="w-full bg-card-background border border-card-border p-4 rounded-2xl shadow-md"
+            className="w-full bg-card-background dark:bg-[#131b2b] border border-card-border p-4 rounded-2xl shadow-md"
           >
             {/* Card Header */}
             <div className="flex justify-between items-start mb-4">
@@ -128,7 +128,7 @@ function ParsedTransactions({
                     type="text"
                     value={editForm?.title || ""}
                     onChange={(e) => updateEditForm("title", e.target.value)}
-                    className="bg-gray-100 dark:bg-background border border-card-border rounded px-2 py-1"
+                    className="bg-gray-100 dark:bg-white/5 border border-card-border rounded px-2 py-1"
                   />
                 ) : (
                   transaction.title
@@ -177,7 +177,7 @@ function ParsedTransactions({
                         Math.round(Number(e.target.value) * 100)
                       )
                     }
-                    className="bg-gray-100 dark:bg-background border border-card-border rounded px-2 py-1 w-full"
+                    className="bg-gray-100 dark:bg-white/5 border border-card-border rounded px-2 py-1 w-full"
                     step="0.01"
                     min="0"
                   />
@@ -198,7 +198,7 @@ function ParsedTransactions({
                     onChange={(e) =>
                       updateEditForm("type", e.target.value as TransactionsType)
                     }
-                    className="bg-gray-100 dark:bg-background border border-card-border rounded px-2 py-1 w-full"
+                    className="bg-gray-100 dark:bg-white/5 border border-card-border rounded px-2 py-1 w-full"
                   >
                     <option value="EXPENSE">EXPENSE</option>
                     <option value="INCOME">INCOME</option>
@@ -225,7 +225,7 @@ function ParsedTransactions({
                   <select
                     value={editForm?.category || "OTHER"}
                     onChange={(e) => updateEditForm("category", e.target.value)}
-                    className="bg-gray-100 dark:bg-background border border-card-border rounded px-2 py-1 w-full"
+                    className="bg-gray-100 dark:bg-white/5 border border-card-border rounded px-2 py-1 w-full"
                   >
                     {categories.map((cat) => (
                       <option key={cat} value={cat}>
@@ -258,7 +258,7 @@ function ParsedTransactions({
                       const formattedDate = `${day}/${month}/${year}`;
                       updateEditForm("date", formattedDate);
                     }}
-                    className="bg-gray-100 dark:bg-background border border-card-border rounded px-2 py-1 w-full"
+                    className="bg-gray-100 dark:bg-white/5 border border-card-border rounded px-2 py-1 w-full"
                   />
                 ) : (
                   <span className="text-title font-medium">
@@ -275,7 +275,7 @@ function ParsedTransactions({
         <button
           onClick={handleCancel}
           disabled={creatingTransaction}
-          className="px-6 py-2 rounded-full border border-gray-300 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800"
+          className="px-6 py-2 rounded-full border bg-gray-100 dark:bg-background border-gray-300 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800"
         >
           Cancel
         </button>

@@ -3,7 +3,7 @@ import type { TransactionSchemaType } from "@/types";
 import { SuccessTransactionDataSchema } from "@/types/zod";
 import { cn } from "@/utils";
 import { useState } from "react";
-import ParsedTransactions from "./ParsedTransactions";
+import ParsedTransactions from "../components/ai_transaction/ParsedTransactions";
 
 function IntelliAdd() {
   const { mutate: parseTransaction, isPending } = useParsedTransactions();
@@ -62,10 +62,10 @@ function IntelliAdd() {
       <div className="w-full">
         <h1 className="text-2xl font-bold">Parse Your tansactions with AI</h1>
       </div>
-      <div className="w-full bg-card-background border border-card-border flex gap-4 flex-col p-4 rounded-2xl shadow-md">
+      <div className="w-full bg-card-background dark:bg-[#10172A] border border-card-border flex gap-4 flex-col p-4 rounded-2xl shadow-md">
         <div className="w-full flex flex-col">
           <textarea
-            className="bg-gray-100 dark:bg-background h-42 text-title border border-card-border focus:outline-none rounded-md p-2 shadow-input disabled:opacity-50 disabled:cursor-not-allowed"
+            className="bg-gray-100 dark:bg-white/5 h-42 text-title border border-card-border focus:outline-none rounded-md p-2 shadow-input disabled:opacity-50 disabled:cursor-not-allowed"
             value={userMessage}
             disabled={
               isPending || (parsedTransactions && parsedTransactions.length > 0)
@@ -89,7 +89,7 @@ function IntelliAdd() {
 
         <div className="flex justify-end">
           <button
-            className="bg-[#1566e7]  text-white px-4 py-2 rounded-full shadow-input cursor-pointer  hover:shadow-lg font-medium"
+            className="bg-[#1566e7] dark:bg-white/15  text-white px-4 py-2 rounded-full shadow-input cursor-pointer  hover:shadow-lg font-medium"
             onClick={getParsedTransactions}
             disabled={
               isPending || (parsedTransactions && parsedTransactions.length > 0)

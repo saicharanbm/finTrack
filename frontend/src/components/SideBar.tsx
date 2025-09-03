@@ -1,47 +1,14 @@
-import {
-  LayoutDashboard,
-  Receipt,
-  TrendingUp,
-  User,
-  PenIcon,
-  Sun,
-  Moon,
-  LogOut,
-} from "lucide-react";
+import { User, Sun, Moon, LogOut } from "lucide-react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { useAuthQuery } from "@/services/queries";
-import React from "react";
 import icon from "@/assets/icon.png";
 import { cn } from "@/utils";
 import { useTheme } from "@/hooks/useTheme";
 import { useLogoutMutation } from "@/services/mutations";
 import { toast } from "react-toastify";
+import { menuItems } from "@/utils/constsnts";
 
-type MenuItem = {
-  id: string;
-  label: string;
-  icon: React.ComponentType<React.SVGProps<SVGSVGElement>>;
-  path: string;
-};
-
-const menuItems: MenuItem[] = [
-  {
-    id: "dashboard",
-    label: "Dashboard",
-    icon: LayoutDashboard,
-    path: "/dashboard",
-  },
-  { id: "budget", label: "IntelliAdd", icon: PenIcon, path: "/add" },
-  {
-    id: "transactions",
-    label: "Transactions",
-    icon: Receipt,
-    path: "/transactions",
-  },
-  { id: "analytics", label: "Analytics", icon: TrendingUp, path: "/analytics" },
-];
-
-const Sidebar: React.FC = () => {
+const Sidebar = () => {
   const { data: userData } = useAuthQuery();
   const { isDark, toggleTheme } = useTheme();
   const { mutateAsync: logout } = useLogoutMutation();
@@ -51,7 +18,7 @@ const Sidebar: React.FC = () => {
       pending: "Logging out...",
       success: {
         render() {
-          navigate("/");
+          // navigate("/");
           return "Logout successful!";
         },
       },

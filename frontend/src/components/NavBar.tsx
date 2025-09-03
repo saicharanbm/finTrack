@@ -1,45 +1,12 @@
-import React, { useEffect } from "react";
-import {
-  LayoutDashboard,
-  Receipt,
-  TrendingUp,
-  PenIcon,
-  Sun,
-  Moon,
-  LogOut,
-  User,
-  ChevronRight,
-} from "lucide-react";
+import { useEffect } from "react";
+import { Sun, Moon, LogOut, User, ChevronRight } from "lucide-react";
 import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import { useAuthQuery } from "@/services/queries";
 import { useTheme } from "@/hooks/useTheme";
 import { useDropdown } from "@/hooks/useDropdown";
 import { cn } from "@/utils";
 import icon from "@/assets/icon.png";
-
-type MenuItem = {
-  id: string;
-  label: string;
-  icon: React.ComponentType<React.SVGProps<SVGSVGElement>>;
-  path: string;
-};
-
-const menuItems: MenuItem[] = [
-  {
-    id: "dashboard",
-    label: "Dashboard",
-    icon: LayoutDashboard,
-    path: "/dashboard",
-  },
-  { id: "budget", label: "IntelliAdd", icon: PenIcon, path: "/add" },
-  {
-    id: "transactions",
-    label: "Transactions",
-    icon: Receipt,
-    path: "/transactions",
-  },
-  { id: "analytics", label: "Analytics", icon: TrendingUp, path: "/analytics" },
-];
+import { menuItems } from "@/utils/constsnts";
 
 const NavBar = () => {
   const { data: userData } = useAuthQuery();
