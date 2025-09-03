@@ -35,11 +35,11 @@ export const useGoogleLoginMutation = () => {
       accessToken: string;
       user: { id: string; email: string; name: string; profilePic: string };
     }) => {
-      const { accessToken: token, user } = data;
+      const { accessToken: token } = data;
       // add the access token to axios instance headers
       axiosInstance.defaults.headers.authorization = `Bearer ${token}`;
 
-      queryClient.setQueryData(["auth", "user"], user);
+      queryClient.invalidateQueries({ queryKey: ["auth", "user"] });
     },
   });
 };
@@ -165,6 +165,9 @@ export const useCreateTransactionMutation = () => {
         // For non-Axios errors
         throw { message: "An unexpected error occurred" };
       }
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["transactions"] });
     },
   });
 };

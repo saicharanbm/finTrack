@@ -1,17 +1,22 @@
 import { useEffect } from "react";
 import { Sun, Moon, LogOut, User, ChevronRight } from "lucide-react";
 import { NavLink, useLocation, useNavigate } from "react-router-dom";
-import { useAuthQuery } from "@/services/queries";
 import { useTheme } from "@/hooks/useTheme";
 import { useDropdown } from "@/hooks/useDropdown";
 import { cn } from "@/utils";
 import icon from "@/assets/icon.png";
 import { menuItems } from "@/utils/constsnts";
+import { queryClient } from "@/main";
+import { toast } from "react-toastify";
+import { useLogoutMutation } from "@/services/mutations";
 
 const NavBar = () => {
-  const { data: userData } = useAuthQuery();
+  type CachedAuth = { user: { name: string; profilePic: string } };
+  const cachedAuth = queryClient.getQueryData(["auth", "user"]) as CachedAuth;
   const { isDark, toggleTheme } = useTheme();
   const { open, setOpen, panelRef, buttonRef } = useDropdown();
+  const { mutateAsync: logout } = useLogoutMutation();
+
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -19,12 +24,25 @@ const NavBar = () => {
   useEffect(() => setOpen(false), [location.pathname, setOpen]);
 
   const handleLogout = () => {
-    // TODO: clear tokens, call API, navigate("/login")
-    console.log("Logout clicked");
+    toast.promise(logout(), {
+      pending: "Logging out...",
+      success: {
+        render() {
+          navigate("/");
+          return "Logout successful!";
+        },
+      },
+      error: {
+        render({ data }: { data: string }) {
+          console.log(data);
+          return (data as string) || "Logout failed!";
+        },
+      },
+    });
   };
 
-  const profilePic = userData?.user?.profilePic ?? "";
-  const userName = userData?.user?.name ?? "Sai";
+  const profilePic = cachedAuth?.user?.profilePic ?? "";
+  const userName = cachedAuth?.user?.name ?? "Sai";
 
   return (
     <header

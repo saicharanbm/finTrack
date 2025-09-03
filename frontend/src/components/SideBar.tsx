@@ -1,17 +1,20 @@
 import { User, Sun, Moon, LogOut } from "lucide-react";
 import { NavLink, useNavigate } from "react-router-dom";
-import { useAuthQuery } from "@/services/queries";
 import icon from "@/assets/icon.png";
 import { cn } from "@/utils";
 import { useTheme } from "@/hooks/useTheme";
 import { useLogoutMutation } from "@/services/mutations";
 import { toast } from "react-toastify";
 import { menuItems } from "@/utils/constsnts";
+import { queryClient } from "@/main";
 
 const Sidebar = () => {
-  const { data: userData } = useAuthQuery();
   const { isDark, toggleTheme } = useTheme();
   const { mutateAsync: logout } = useLogoutMutation();
+  type CachedAuth = { user: { name: string; profilePic: string } };
+  const cachedAuth = queryClient.getQueryData(["auth", "user"]) as CachedAuth;
+  console.log(cachedAuth);
+
   const navigate = useNavigate();
   const handleLogout = () => {
     toast.promise(logout(), {
@@ -111,9 +114,9 @@ const Sidebar = () => {
       <div className="p-6 w-full">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center overflow-hidden">
-            {userData?.user?.profilePic ? (
+            {cachedAuth?.user?.profilePic ? (
               <img
-                src={userData.user.profilePic}
+                src={cachedAuth.user.profilePic}
                 alt="Profile"
                 className="w-full h-full object-cover"
                 referrerPolicy="no-referrer"
@@ -124,7 +127,7 @@ const Sidebar = () => {
           </div>
           <div className="min-w-0">
             <span className="block text-lg font-medium truncate text-gray-300">
-              {userData?.user?.name ?? "Sai"}
+              {cachedAuth?.user.name ?? "Sai"}
             </span>
           </div>
         </div>

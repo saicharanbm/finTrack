@@ -33,3 +33,6 @@ export const formatDateDDMMYYYY = (d: string | Date): string => {
   const yyyy = dateObj.getFullYear();
   return `${dd}/${mm}/${yyyy}`;
 };
+
+export const fmtINR = (paise: number) =>
+  (paise / 100).toLocaleString("en-IN", { style: "currency", currency: "INR" });

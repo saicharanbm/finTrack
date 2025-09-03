@@ -1,18 +1,27 @@
 import React from "react";
 import { useTransactionsSummary } from "@/services/queries"; // your hooks file
 import type { RangeKey } from "@/types";
-
-const fmtINR = (paise: number) =>
-  (paise / 100).toLocaleString("en-IN", { style: "currency", currency: "INR" });
+import { fmtINR } from "@/utils/helper";
+import { cn } from "@/utils";
 
 const Card: React.FC<{
   title: string;
   value: string;
   accent?: "green" | "red" | "blue";
-}> = ({ title, value }) => (
+}> = ({ title, value, accent }) => (
   <div className="rounded-2xl border border-white/10 bg-white dark:bg-[#0f172a] p-5 shadow">
-    <div className="text-sm text-gray-500 dark:text-gray-300">{title}</div>
-    <div className="mt-1 text-2xl font-semibold">{value}</div>
+    <div className={cn("text-sm text-gray-500 dark:text-gray-300")}>
+      {title}
+    </div>
+    <div
+      className={cn(
+        "mt-1 text-2xl font-semibold text-blue-500",
+        accent === "green" && "text-green-500",
+        accent === "red" && "text-red-500"
+      )}
+    >
+      {value}
+    </div>
   </div>
 );
 

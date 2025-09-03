@@ -1,5 +1,6 @@
 import { useTransactionsByCategory } from "@/services/queries";
 import type { RangeKey } from "@/types";
+import { fmtINR } from "@/utils/helper";
 import {
   PieChart,
   Pie,
@@ -24,9 +25,6 @@ const COLORS = [
   "#14b8a6",
   "#f97316",
 ];
-
-const fmtINR = (paise: number) =>
-  (paise / 100).toLocaleString("en-IN", { style: "currency", currency: "INR" });
 
 export default function CategoriesPie({ range }: { range: RangeKey }) {
   const { data, isLoading, isError } = useTransactionsByCategory(range);
