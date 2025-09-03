@@ -21,6 +21,5 @@ export const useTransactionsQuery = (params: TransactionsQueryParams = {}) => {
       const { data } = await getTransactions(params);
       return data; // { range, page, pageSize, total, items }
     },
-    staleTime: 5 * 60 * 1000,
   });
 };

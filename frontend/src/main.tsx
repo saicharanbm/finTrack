@@ -14,7 +14,7 @@ import ProtectedRoute from "@/routes/ProtectedRoute";
 import Dashboard from "@/components/DashBoard";
 import NotFound from "@/components/NotFound";
 import Sidebar from "@/components/SideBar";
-import IntelliAdd from "./components/IntelliAdd";
+import IntelliAdd from "./components/ai_transaction/IntelliAdd";
 import Analytics from "./components/Analytics";
 import Transactions from "./components/transactions/Transactions";
 

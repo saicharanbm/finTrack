@@ -174,8 +174,9 @@ transactionsRouter.put("/:id", async (req, res) => {
   if (!id) {
     return res.status(400).json({ message: "Transaction ID is required" });
   }
+  console.log("request :", req.body);
 
-  const parsed = UpdateTransactionSchema.safeParse(req.body?.data);
+  const parsed = UpdateTransactionSchema.safeParse(req.body.data);
   if (!parsed.success) {
     return res.status(400).json({ message: "Validation failed" });
   }

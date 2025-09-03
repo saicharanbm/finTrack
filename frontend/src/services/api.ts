@@ -97,7 +97,7 @@ export const updateTransaction = (
   data: UpdateTransactionSchema
 ) => {
   // send fields directly; server expects req.body to be the schema
-  return axiosInstance.put(`/api/transactions/${id}`, data);
+  return axiosInstance.put(`/api/transactions/${id}`, { data });
 };
 
 export const deleteTransaction = (id: string) => {

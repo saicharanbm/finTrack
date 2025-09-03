@@ -21,6 +21,17 @@ export const EditModal: React.FC<{
         }
       : null
   );
+  // helpers
+  const toInputDate = (d?: string) => {
+    if (!d) return "";
+    // already yyyy-mm-dd
+    if (/^\d{4}-\d{2}-\d{2}$/.test(d)) return d;
+    // dd/mm/yyyy -> yyyy-mm-dd
+    const m = d.match(/^(\d{2})\/(\d{2})\/(\d{4})$/);
+    if (!m) return "";
+    const [, dd, mm, yyyy] = m;
+    return `${yyyy}-${mm}-${dd}`;
+  };
 
   React.useEffect(() => {
     if (!txn) return setForm(null);
@@ -70,9 +81,11 @@ export const EditModal: React.FC<{
             <input
               type="date"
               className="rounded border border-card-border bg-white dark:bg-background px-3 py-2"
-              value={form.date}
-              max={new Date().toISOString().split("T")[0]}
-              onChange={(e) => setForm({ ...form, date: e.target.value })}
+              value={toInputDate(form.date)} // <-- convert for input
+              max={new Date().toISOString().split("T")[0]} // <-- prevents future dates
+              onChange={(e) => {
+                setForm({ ...form, date: e.target.value });
+              }}
             />
           </label>
 
