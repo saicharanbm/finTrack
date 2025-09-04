@@ -1,7 +1,7 @@
 import { User, Sun, Moon, LogOut } from "lucide-react";
 import { NavLink, useNavigate } from "react-router-dom";
 import icon from "@/assets/icon.png";
-import { cn } from "@/utils";
+import { cn, ToastStlye } from "@/utils";
 import { useTheme } from "@/hooks/useTheme";
 import { useLogoutMutation } from "@/services/mutations";
 import { toast } from "react-toastify";
@@ -17,21 +17,25 @@ const Sidebar = () => {
 
   const navigate = useNavigate();
   const handleLogout = () => {
-    toast.promise(logout(), {
-      pending: "Logging out...",
-      success: {
-        render() {
-          navigate("/");
-          return "Logout successful!";
+    toast.promise(
+      logout(),
+      {
+        pending: "Logging out...",
+        success: {
+          render() {
+            navigate("/");
+            return "Logout successful!";
+          },
+        },
+        error: {
+          render({ data }: { data: string }) {
+            console.log(data);
+            return (data as string) || "Logout failed!";
+          },
         },
       },
-      error: {
-        render({ data }: { data: string }) {
-          console.log(data);
-          return (data as string) || "Logout failed!";
-        },
-      },
-    });
+      ToastStlye
+    );
   };
 
   return (

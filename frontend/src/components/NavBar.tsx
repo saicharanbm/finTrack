@@ -3,7 +3,7 @@ import { Sun, Moon, LogOut, User, ChevronRight } from "lucide-react";
 import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import { useTheme } from "@/hooks/useTheme";
 import { useDropdown } from "@/hooks/useDropdown";
-import { cn } from "@/utils";
+import { cn, ToastStlye } from "@/utils";
 import icon from "@/assets/icon.png";
 import { menuItems } from "@/utils/constsnts";
 import { queryClient } from "@/main";
@@ -24,21 +24,25 @@ const NavBar = () => {
   useEffect(() => setOpen(false), [location.pathname, setOpen]);
 
   const handleLogout = () => {
-    toast.promise(logout(), {
-      pending: "Logging out...",
-      success: {
-        render() {
-          navigate("/");
-          return "Logout successful!";
+    toast.promise(
+      logout(),
+      {
+        pending: "Logging out...",
+        success: {
+          render() {
+            navigate("/");
+            return "Logout successful!";
+          },
+        },
+        error: {
+          render({ data }: { data: string }) {
+            console.log(data);
+            return (data as string) || "Logout failed!";
+          },
         },
       },
-      error: {
-        render({ data }: { data: string }) {
-          console.log(data);
-          return (data as string) || "Logout failed!";
-        },
-      },
-    });
+      ToastStlye
+    );
   };
 
   const profilePic = cachedAuth?.user?.profilePic ?? "";

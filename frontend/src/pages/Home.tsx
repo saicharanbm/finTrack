@@ -3,8 +3,10 @@ import icon from "../assets/icon.png";
 import { useGoogleLogin } from "@react-oauth/google";
 import { toast } from "react-toastify";
 import { ToastStlye } from "@/utils";
+import { useNavigate } from "react-router-dom";
 function Login() {
   const { mutate: signin, isPending } = useGoogleLoginMutation();
+  const navigate = useNavigate();
 
   const googleLogin = useGoogleLogin({
     flow: "auth-code",
@@ -15,7 +17,7 @@ function Login() {
         new Promise<void>((resolve, reject) => {
           signin(response.code, {
             onSuccess: () => {
-              // navigate("/login");
+              navigate("/dashboard");
               resolve();
             },
             onError: (error) => {
