@@ -104,24 +104,22 @@ export const updateTransaction = (
 export const deleteTransaction = (id: string) => {
   return axiosInstance.delete(`/api/transactions/${id}`);
 };
-const toParams = (range: RangeKey) => (range === "all" ? {} : { range }); // omit param for "all"
 
 export const getTransactionsSummary = (query: RangeKey) => {
   console.log(query);
   return axiosInstance.get("/api/analytics/summary", {
-    params: toParams(query),
+    params: { range: query },
   });
 };
 export const getTransactionsByCategories = (query: RangeKey) => {
-  console.log(query);
   return axiosInstance.get("/api/analytics/categories", {
-    params: toParams(query),
+    params: { range: query },
   });
 };
 export const getTransactionsTrends = (query: RangeKey) => {
   console.log(query);
 
   return axiosInstance.get("/api/analytics/trends", {
-    params: toParams(query),
+    params: { range: query },
   });
 };
