@@ -25,6 +25,13 @@ button:disabled {
   --card-border: hsl(228, 4.42%, 22.16%);
 }
 
+body {
+  background-color: var(--background); /* Match your dark theme */
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden; /* Prevent horizontal scrolling */
+}
+
 @theme inline {
   --color-background: var(--background);
   --color-theme: var(--theme);

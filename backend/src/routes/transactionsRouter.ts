@@ -10,7 +10,7 @@ import {
 } from "../types/zod";
 import { prisma } from "../db/prisma";
 import { Prisma, Category, TransactionType } from "@prisma/client";
-import { getSinceDate } from "../utils/helper";
+import { getSinceDate, serializeTxn, serializeTxns } from "../utils/helper";
 
 export const transactionsRouter = Router();
 const parseDate = (dateStr: string | undefined) => {
@@ -19,20 +19,6 @@ const parseDate = (dateStr: string | undefined) => {
   const [day, month, year] = dateStr.split("/");
   return new Date(parseInt(year), parseInt(month) - 1, parseInt(day));
 };
-
-/** Serialize a single transaction (BigInt -> number). */
-function serializeTxn(t: any) {
-  return {
-    ...t,
-    amountPaise:
-      typeof t.amountPaise === "bigint" ? Number(t.amountPaise) : t.amountPaise,
-  };
-}
-
-/** Serialize an array of transactions. */
-function serializeTxns(txns: any[]) {
-  return txns.map(serializeTxn);
-}
 
 // create single transaction
 transactionsRouter.post("/", async (req, res) => {

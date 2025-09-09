@@ -36,3 +36,16 @@ export function getSinceDate(range?: string): Date | undefined {
       return undefined;
   }
 }
+
+export function serializeTxn(t: any) {
+  return {
+    ...t,
+    amountPaise:
+      typeof t.amountPaise === "bigint" ? Number(t.amountPaise) : t.amountPaise,
+  };
+}
+
+/** Serialize an array of transactions. */
+export function serializeTxns(txns: any[]) {
+  return txns.map(serializeTxn);
+}

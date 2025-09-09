@@ -2,10 +2,16 @@ import { Router } from "express";
 import { RangeKey } from "../types";
 import { RangeSchema } from "../types/zod";
 import { Prisma } from "@prisma/client";
-import { getSinceDate } from "../utils/helper";
+import { getSinceDate, serializeTxns } from "../utils/helper";
 import { prisma } from "../db/prisma";
 
 export const analyticsRouter = Router();
+
+interface TrendPoint {
+  bucket: string;
+  incomePaise: number;
+  expensePaise: number;
+}
 
 /** choose a sensible bucket size for the trend chart */
 function bucketFor(range?: RangeKey): "day" | "month" {
@@ -16,6 +22,46 @@ function bucketFor(range?: RangeKey): "day" | "month" {
 
 const toNumber = (b: bigint | number | null | undefined) =>
   typeof b === "bigint" ? Number(b) : b ?? 0;
+
+function formatDateForBucket(date: Date, bucket: "day" | "month"): string {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+
+  if (bucket === "day") {
+    const day = String(date.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`;
+  } else {
+    return `${year}-${month}-01`;
+  }
+}
+
+function groupTransactionsByBucket(
+  transactions: Array<{
+    date: Date;
+    type: "INCOME" | "EXPENSE";
+    amountPaise: number;
+  }>,
+  bucket: "day" | "month"
+): Map<string, { income: number; expense: number }> {
+  const grouped = new Map<string, { income: number; expense: number }>();
+
+  for (const transaction of transactions) {
+    const bucketKey = formatDateForBucket(transaction.date, bucket);
+
+    if (!grouped.has(bucketKey)) {
+      grouped.set(bucketKey, { income: 0, expense: 0 });
+    }
+
+    const bucketData = grouped.get(bucketKey)!;
+    if (transaction.type === "INCOME") {
+      bucketData.income += transaction.amountPaise;
+    } else {
+      bucketData.expense += transaction.amountPaise;
+    }
+  }
+
+  return grouped;
+}
 
 analyticsRouter.get("/summary", async (req, res) => {
   try {
@@ -123,34 +169,34 @@ analyticsRouter.get("/trends", async (req, res) => {
     const since = getSinceDate(range);
     const bucket = bucketFor(range); // 'day' | 'month'
 
-    // We restrict the date_trunc literal to two safe options → no injection risk
-    const dtLiteral = bucket === "day" ? "day" : "month";
+    const transactions = await prisma.transaction.findMany({
+      where: {
+        creatorId: userId,
+        ...(since ? { date: { gte: since } } : {}),
+      },
+      select: {
+        date: true,
+        type: true,
+        amountPaise: true,
+      },
+      orderBy: {
+        date: "asc",
+      },
+    });
 
-    // bucket as ISO date string (YYYY-MM-DD for day, YYYY-MM-01 for month)
-    const rows: Array<{
-      bucket: string;
-      income: string | null;
-      expense: string | null;
-    }> = await prisma.$queryRawUnsafe(
-      `
-        SELECT
-          to_char(date_trunc('${dtLiteral}', "date"), 'YYYY-MM-DD') AS bucket,
-          SUM(CASE WHEN "type" = 'INCOME'  THEN "amountPaise" ELSE 0 END) AS income,
-          SUM(CASE WHEN "type" = 'EXPENSE' THEN "amountPaise" ELSE 0 END) AS expense
-        FROM "Transaction"
-        WHERE "creatorId" = $1
-          ${since ? `AND "date" >= $2` : ``}
-        GROUP BY 1
-        ORDER BY 1 ASC
-        `,
-      ...(since ? [userId, since] : [userId])
+    const grouped = groupTransactionsByBucket(
+      serializeTxns(transactions),
+      bucket
     );
 
-    const points = rows.map((r) => ({
-      bucket: r.bucket, // e.g., '2025-06-01' (month) or '2025-06-14' (day)
-      incomePaise: Number(r.income ?? 0),
-      expensePaise: Number(r.expense ?? 0),
-    }));
+    // Convert to array and sort
+    const points: TrendPoint[] = Array.from(grouped.entries())
+      .map(([bucketKey, data]) => ({
+        bucket: bucketKey,
+        incomePaise: data.income,
+        expensePaise: data.expense,
+      }))
+      .sort((a, b) => a.bucket.localeCompare(b.bucket));
 
     res.status(200).json({ range, bucket, points });
   } catch (err) {
